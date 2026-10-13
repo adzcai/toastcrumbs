@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "toastcrumbs",
+	"version": "0.1.0",
+	"description": "Obsidian plugin: tree view of notes from up/down frontmatter links",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {

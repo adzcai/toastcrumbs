@@ -1,36 +1,61 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import MyPlugin from './main';
+import type ToastcrumbsPlugin from './main';
 
-export interface MyPluginSettings {
-	mySetting: string;
+export interface ToastcrumbsSettings {
+	upKeys: string[];
+	downKeys: string[];
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default',
+export const DEFAULT_SETTINGS: ToastcrumbsSettings = {
+	upKeys: ['up'],
+	downKeys: ['down'],
 };
 
-export class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+function parseKeys(value: string): string[] {
+	return value
+		.split(',')
+		.map((k) => k.trim().toLowerCase())
+		.filter((k) => k.length > 0);
+}
 
-	constructor(app: App, plugin: MyPlugin) {
+export class ToastcrumbsSettingTab extends PluginSettingTab {
+	constructor(
+		app: App,
+		private readonly plugin: ToastcrumbsPlugin,
+	) {
 		super(app, plugin);
-		this.plugin = plugin;
 	}
 
 	display(): void {
 		const { containerEl } = this;
-
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Settings #1')
-			.setDesc("It's a secret")
+			.setName('Parent properties')
+			.setDesc(
+				'Comma-separated frontmatter properties that link to parent notes.',
+			)
 			.addText((text) =>
 				text
-					.setPlaceholder('Enter your secret')
-					.setValue(this.plugin.settings.mySetting)
+					.setPlaceholder('Up')
+					.setValue(this.plugin.settings.upKeys.join(', '))
 					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
+						this.plugin.settings.upKeys = parseKeys(value);
+						await this.plugin.saveSettings();
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName('Child properties')
+			.setDesc(
+				'Comma-separated frontmatter properties that link to child notes.',
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('Down')
+					.setValue(this.plugin.settings.downKeys.join(', '))
+					.onChange(async (value) => {
+						this.plugin.settings.downKeys = parseKeys(value);
 						await this.plugin.saveSettings();
 					}),
 			);

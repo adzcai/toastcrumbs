@@ -1,8 +1,32 @@
-/*
+.toastcrumbs-view {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	overflow: hidden;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.toastcrumbs-view .toastcrumbs-tree {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: var(--size-4-2);
+}
 
-If your plugin does not need CSS, delete this file.
+.toastcrumbs-view .tree-item-self.is-unresolved .tree-item-inner {
+	color: var(--text-faint);
+	font-style: italic;
+}
 
-*/
+.toastcrumbs-view .toastcrumbs-cycle {
+	display: inline-flex;
+	color: var(--text-faint);
+}
+
+.toastcrumbs-view .toastcrumbs-cycle svg {
+	width: var(--icon-xs);
+	height: var(--icon-xs);
+}
+
+.toastcrumbs-view .toastcrumbs-more {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
