@@ -3,7 +3,7 @@
 	"name": "Toastcrumbs",
 	"version": "0.1.0",
 	"minAppVersion": "1.7.2",
-	"description": "Browse notes as a tree built from up/down frontmatter links.",
+	"description": "Browse notes as a tree built from up/down frontmatter links, and navigate frontmatter links and date notes.",
 	"author": "Alexander Cai",
 	"isDesktopOnly": false
 }

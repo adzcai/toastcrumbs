@@ -2,6 +2,12 @@ import { debounce, Plugin } from 'obsidian';
 import { VIEW_TYPE_HIERARCHY } from './constants';
 import { HierarchyIndex } from './graph/hierarchy-index';
 import {
+	addPropertyCommands,
+	registerNavigateCommands,
+	removePropertyCommands,
+} from './navigate/commands';
+import { frontmatterLinkExtension } from './navigate/frontmatter-link-extension';
+import {
 	DEFAULT_SETTINGS,
 	ToastcrumbsSettings,
 	ToastcrumbsSettingTab,
@@ -46,6 +52,8 @@ export default class ToastcrumbsPlugin extends Plugin {
 				void this.activateView();
 			},
 		});
+		registerNavigateCommands(this);
+		this.registerEditorExtension(frontmatterLinkExtension);
 		this.addSettingTab(new ToastcrumbsSettingTab(this.app, this));
 
 		this.app.workspace.onLayoutReady(() => {
@@ -77,11 +85,29 @@ export default class ToastcrumbsPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign(
-			{},
-			DEFAULT_SETTINGS,
-			(await this.loadData()) as Partial<ToastcrumbsSettings>,
+		const data = (await this.loadData()) as Partial<ToastcrumbsSettings>;
+		this.settings = {
+			...DEFAULT_SETTINGS,
+			...data,
+			templatePaths: {
+				...DEFAULT_SETTINGS.templatePaths,
+				...data?.templatePaths,
+			},
+		};
+	}
+
+	async setCommandProperties(properties: string[]) {
+		const current = this.settings.commandProperties;
+		removePropertyCommands(
+			this,
+			current.filter((p) => !properties.includes(p)),
 		);
+		addPropertyCommands(
+			this,
+			properties.filter((p) => !current.includes(p)),
+		);
+		this.settings.commandProperties = properties;
+		await this.saveData(this.settings);
 	}
 
 	async saveSettings() {
